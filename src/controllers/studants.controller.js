@@ -1,3 +1,4 @@
+import { getProjectsDB } from "../repositories/project.repository.js";
 import { createEnrollmentDB, getClassesDB, getStudantByIdDB, registerStudantDB } from "../repositories/studant.repository.js";
 
 export async function registerStudant(req, res) {
@@ -10,10 +11,16 @@ export async function registerStudant(req, res) {
   }
 }
 
-export async function getClasses(req, res) {
+export async function getClassesAndProjects(req, res) {
   try {
     const classes = await getClassesDB();
-    res.send(classes.rows);
+    const projects = await getProjectsDB();
+
+    const response = {
+      classesList: classes.rows,
+      projectsList: projects.rows
+    }
+    res.send(response);
   } catch (err) {
     res.status(500).send(err.message);
   }

@@ -36,7 +36,7 @@ export async function getStudantsDB() {
 }
 
 export async function getClassesDB() {
-  const result = await db.query("SELECT * from classes;");
+  const result = await db.query("SELECT * FROM classes;");
   return result;
 }
 
