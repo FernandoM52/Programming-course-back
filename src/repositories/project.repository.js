@@ -22,7 +22,7 @@ export async function getDeliveriesDB(params) {
   const { classCode, project } = params;
 
   const result = await db.query(
-    `SELECT projects.name AS "ProjectName", studants.name AS "StudantName", studants.image, deliveries."currentNote"
+    `SELECT projects.name AS "ProjectName", studants.id as "studantId", studants.name AS "StudantName", studants.image, deliveries."currentNote"
      FROM deliveries
      JOIN projects ON projects.name = $1
      JOIN studants ON studants.id = deliveries."studantId"
@@ -32,4 +32,15 @@ export async function getDeliveriesDB(params) {
     [project, project, classCode,]
   );
   return result.rows;
+}
+
+export async function updateNoteDB(params, body) {
+  const { project, id } = params;
+  const { note } = body;
+
+  await db.query(
+    `UPDATE deliveries SET "currentNote" = $1
+     WHERE "projectName" = $2 AND "studantId" = $3;`,
+    [note, project, id,]
+  );
 }
