@@ -29,3 +29,13 @@ export async function createEnrollmentDB(body) {
     [id, currentClass,]
   );
 }
+
+export async function getStudantsDB() {
+  const result = await db.query("SELECT studants.id, studants.name, studants.image FROM studants;");
+  return result;
+}
+
+export async function getClassesDB() {
+  const result = await db.query("SELECT * from classes;");
+  return result;
+}
