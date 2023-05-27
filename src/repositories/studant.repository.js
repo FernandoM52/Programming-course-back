@@ -39,3 +39,24 @@ export async function getClassesDB() {
   const result = await db.query("SELECT * from classes;");
   return result;
 }
+
+export async function checkStudantsClassDB(params) {
+  const { classCode } = params;
+
+  const result = await db.query(
+    `SELECT studants.id, studants.name, studants.image FROM studants WHERE "currentClass" = $1;`,
+    [classCode]
+  );
+  return result;
+}
+
+export async function getStudantByIdDB(classCode, studantId) {
+  const result = await db.query(
+    `SELECT studants.*, enrollments.started, enrollments.ended
+     FROM studants
+     JOIN enrollments ON enrollments."classCode" = $1
+     WHERE studants.id = $2;`,
+    [classCode, studantId,]
+  );
+  return result;
+}
