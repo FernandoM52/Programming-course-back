@@ -78,3 +78,31 @@ export async function updateStudantDB(body, params) {
     [name, cpf, email, image, id,]
   );
 }
+
+export async function updateStudantEnrollmentDB(body) {
+  const { id, name, email, image, className } = body;
+
+  await db.query(
+    `UPDATE studants
+     SET name = $1, email = $2, image = $3, "currentClass" = $4
+     WHERE id = $5;`,
+    [name, email, image, className, id,]
+  );
+}
+
+
+export async function endEnrollmentDB(params) {
+  const { id } = params;
+
+  await db.query(
+    `UPDATE enrollments SET ended = now()
+     WHERE enrollments."studantId" = $1;`,
+    [id]
+  );
+
+  await db.query(
+    `UPDATE studants SET "currentClass" = null
+     WHERE id = $1;`,
+    [id]
+  );
+}

@@ -2,14 +2,19 @@ import { getStudantDB, checkStudantsClassDB, getStudantByCpfDB } from "../reposi
 
 export async function validateRegisterStudant(req, res, next) {
   try {
-    const studant = await getStudantDB(req.body);
+    const student = await getStudantDB(req.body);
 
-    if (studant.rows[0]) {
-      const { currentClass } = studant.rows[0];
+    if (student.rows[0]) {
+      const { currentClass } = student.rows[0];
+
       if (currentClass !== null) return res.status(409).send({ message: `Aluno já está cadastrado na turma ${currentClass}` });
+      if (currentClass === null && student.rows[0].cpf === req.body.cpf) {
+        req.body.id = student.rows[0].id;
+        return next();
+      }
     }
 
-    if (!studant.rows[0]) return next();
+    if (!student.rows[0]) return next();
   } catch (err) {
     res.status(500).send(err.message);
   }

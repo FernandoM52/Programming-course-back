@@ -1,9 +1,14 @@
 import { getProjectsDB } from "../repositories/project.repository.js";
-import { createEnrollmentDB, getClassesDB, getStudantByIdDB, registerStudantDB, updateStudantDB } from "../repositories/studant.repository.js";
+import { createEnrollmentDB, endEnrollmentDB, getClassesDB, getStudantByIdDB, registerStudantDB, updateStudantDB, updateStudantEnrollmentDB } from "../repositories/studant.repository.js";
 
 export async function registerStudant(req, res) {
   try {
-    await registerStudantDB(req.body);
+    if (req.body.id) {
+      await updateStudantEnrollmentDB(req.body);
+    } else {
+      await registerStudantDB(req.body);
+    }
+
     await createEnrollmentDB(req.body)
     res.sendStatus(201);
   } catch (err) {
@@ -51,6 +56,15 @@ export async function updateStudent(req, res) {
   try {
     await updateStudantDB(req.body, req.params);
     res.send({ message: "Dados atualizados com sucesso!" });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+}
+
+export async function endEnrollment(req, res) {
+  try {
+    await endEnrollmentDB(req.params);
+    res.send({ message: "Matrícula finalizada com sucesso" });
   } catch (err) {
     res.status(500).send(err.message);
   }
