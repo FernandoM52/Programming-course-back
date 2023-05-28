@@ -1,5 +1,5 @@
 import { createEnrollmentDB, updateStudentEnrollmentDB } from "../repositories/enrollment.repository.js";
-import { getStudentDataDB, registerStudentDB, updateStudentDB } from "../repositories/studant.repository.js";
+import { getStudentDataDB, registerStudentDB, updateStudentDB } from "../repositories/student.repository.js";
 
 export async function registerStudent(req, res) {
   try {

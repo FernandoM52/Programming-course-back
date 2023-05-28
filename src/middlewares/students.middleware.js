@@ -1,4 +1,4 @@
-import { getStudentDB, checkStudentsClassDB, getStudentByCpfDB, getStudentByIdDB } from "../repositories/studant.repository.js";
+import { getStudentDB, checkStudentsClassDB, getStudentByCpfDB, getStudentByIdDB } from "../repositories/student.repository.js";
 
 export async function validateRegisterStudent(req, res, next) {
   try {
