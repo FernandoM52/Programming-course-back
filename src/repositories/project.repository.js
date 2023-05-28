@@ -1,21 +1,32 @@
 import { db } from "../database/db.connection.js";
 
-export async function getProjectsDB() {
-  const result = await db.query("SELECT * FROM projects;");
-  return result;
-}
-
 export async function deliverProjectDB(body) {
-  const { className, studantName, email, projectName, projectLink } = body;
+  const { className, studentName, email, projectName, projectLink } = body;
 
-  const studant = await db.query("SELECT * FROM studants WHERE email = $1 AND name = $2;", [email, studantName]);
-  const { id } = studant.rows[0];
+  const student = await db.query("SELECT * FROM studants WHERE email = $1 AND name = $2;", [email, studentName]);
+  const { id } = student.rows[0];
 
   await db.query(
     `INSERT INTO deliveries ("classCode", "studantId", "projectName", "projectLink")
      VALUES ($1, $2, $3, $4);`,
     [className, id, projectName, projectLink,]
   );
+}
+
+export async function updateNoteDB(params, body) {
+  const { project, id } = params;
+  const { note } = body;
+
+  await db.query(
+    `UPDATE deliveries SET "currentNote" = $1
+     WHERE "projectName" = $2 AND "studantId" = $3;`,
+    [note, project, id,]
+  );
+}
+
+export async function getProjectsDB() {
+  const result = await db.query("SELECT * FROM projects;");
+  return result;
 }
 
 export async function getDeliveriesDB(params) {
@@ -34,13 +45,16 @@ export async function getDeliveriesDB(params) {
   return result.rows;
 }
 
-export async function updateNoteDB(params, body) {
-  const { project, id } = params;
-  const { note } = body;
+export async function checkDelivery(body) {
+  const { email, projectName } = body;
 
-  await db.query(
-    `UPDATE deliveries SET "currentNote" = $1
-     WHERE "projectName" = $2 AND "studantId" = $3;`,
-    [note, project, id,]
+  const student = await db.query("SELECT * FROM studants WHERE email = $1;", [email]);
+  const { id } = student.rows[0];
+
+  const project = await db.query(
+    `SELECT * FROM deliveries
+     WHERE "studantId" = $1 AND "projectName" = $2`,
+    [id, projectName]
   );
+  return project;
 }

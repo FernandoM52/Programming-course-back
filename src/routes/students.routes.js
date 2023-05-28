@@ -1,16 +1,14 @@
 import { Router } from "express";
+import { validateRegisterStudent, validStudentCpf, validateStudentsByclass, validateStudentId } from "../middlewares/students.middleware.js";
 import validateSchema from "../middlewares/validateSchema.middleware.js";
-import { studantSchema } from "../schemas/studant.schema.js";
-import { validStudentCpf, validateRegisterStudant, validateStudantsByclass } from "../middlewares/studants.middleware.js";
-import { endEnrollment, getClassesAndProjects, getStudantById, getStudantsByClass, registerStudant, updateStudent } from "../controllers/studants.controller.js";
+import { studentSchema } from "../schemas/student.schema.js";
+import { registerStudent, updateStudent, getStudentsByClass, getStudentById } from "../controllers/students.controller.js";
 
 const studentRouter = Router();
 
-studentRouter.post("/register", validateSchema(studantSchema), validateRegisterStudant, registerStudant);
-studentRouter.get("/classes", getClassesAndProjects);
-studentRouter.get("/students/:classCode", validateStudantsByclass, getStudantsByClass);
-studentRouter.get("/students/:classCode/:id", getStudantById);
-studentRouter.put("/students/:id", validateSchema(studantSchema), validStudentCpf, updateStudent);
-studentRouter.put("/students/enrollment/:id", endEnrollment);
+studentRouter.post("/register", validateSchema(studentSchema), validateRegisterStudent, registerStudent);
+studentRouter.put("/students/:id", validateSchema(studentSchema), validStudentCpf, updateStudent);
+studentRouter.get("/studentsList/:classCode", validateStudentsByclass, getStudentsByClass);
+studentRouter.get("/students/:id", validateStudentId, getStudentById);
 
 export default studentRouter;

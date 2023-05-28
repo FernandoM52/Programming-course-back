@@ -1,20 +1,6 @@
 import { db } from "../database/db.connection.js";
 
-export async function getStudantDB(body) {
-  const { email, cpf } = body;
-
-  const result = await db.query("SELECT * FROM studants WHERE email = $1 AND cpf = $2;", [email, cpf]);
-  return result;
-}
-
-export async function getStudantByCpfDB(body) {
-  const { cpf } = body;
-
-  const result = await db.query("SELECT * FROM studants WHERE cpf = $1;", [cpf]);
-  return result;
-}
-
-export async function registerStudantDB(body) {
+export async function registerStudentDB(body) {
   const { name, email, image, cpf, className } = body;
 
   await db.query(
@@ -24,51 +10,7 @@ export async function registerStudantDB(body) {
   );
 }
 
-export async function createEnrollmentDB(body) {
-  const { email, cpf } = body;
-
-  const result = await db.query("SELECT * FROM studants WHERE email = $1 AND cpf = $2;", [email, cpf]);
-  const { id, currentClass } = result.rows[0];
-
-  await db.query(
-    `INSERT INTO enrollments ("studantId", "classCode")
-    VALUES ($1, $2);`,
-    [id, currentClass,]
-  );
-}
-
-export async function getStudantsDB() {
-  const result = await db.query("SELECT studants.id, studants.name, studants.image FROM studants;");
-  return result;
-}
-
-export async function getClassesDB() {
-  const result = await db.query("SELECT * FROM classes;");
-  return result;
-}
-
-export async function checkStudantsClassDB(params) {
-  const { classCode } = params;
-
-  const result = await db.query(
-    `SELECT studants.id, studants.name, studants.image FROM studants WHERE "currentClass" = $1;`,
-    [classCode]
-  );
-  return result;
-}
-
-export async function getStudantByIdDB(classCode, id) {
-  const result = await db.query(
-    `SELECT studants.*, enrollments.started, enrollments.ended
-     FROM studants
-     JOIN enrollments ON enrollments."classCode" = $1
-     WHERE studants.id = $2;`,
-    [classCode, id,]
-  );
-  return result;
-}
-
-export async function updateStudantDB(body, params) {
+export async function updateStudentDB(body, params) {
   const { name, cpf, email, image, } = body;
   const { id } = params;
 
@@ -79,30 +21,44 @@ export async function updateStudantDB(body, params) {
   );
 }
 
-export async function updateStudantEnrollmentDB(body) {
-  const { id, name, email, image, className } = body;
+export async function getStudentDB(body) {
+  const { email, cpf } = body;
 
-  await db.query(
-    `UPDATE studants
-     SET name = $1, email = $2, image = $3, "currentClass" = $4
-     WHERE id = $5;`,
-    [name, email, image, className, id,]
-  );
+  const result = await db.query("SELECT * FROM studants WHERE email = $1 AND cpf = $2;", [email, cpf]);
+  return result;
 }
 
+export async function getStudentByCpfDB(body) {
+  const { cpf } = body;
 
-export async function endEnrollmentDB(params) {
+  const result = await db.query("SELECT * FROM studants WHERE cpf = $1;", [cpf]);
+  return result;
+}
+
+export async function getStudentByIdDB(params) {
   const { id } = params;
 
-  await db.query(
-    `UPDATE enrollments SET ended = now()
-     WHERE enrollments."studantId" = $1;`,
-    [id]
-  );
+  const result = await db.query(`SELECT * FROM studants WHERE id = $1;`, [id]);
+  return result;
+}
 
-  await db.query(
-    `UPDATE studants SET "currentClass" = null
-     WHERE id = $1;`,
+export async function getStudentDataDB(id) {
+  const result = await db.query(
+    `SELECT studants.*, enrollments.started, enrollments.ended
+     FROM studants
+     JOIN enrollments ON enrollments."studantId" = studants.id
+     WHERE studants.id = $1;`,
     [id]
   );
+  return result;
+}
+
+export async function checkStudentsClassDB(params) {
+  const { classCode } = params;
+
+  const result = await db.query(
+    `SELECT studants.id, studants.name, studants.image FROM studants WHERE "currentClass" = $1;`,
+    [classCode]
+  );
+  return result;
 }
