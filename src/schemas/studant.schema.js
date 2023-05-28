@@ -7,3 +7,5 @@ export const studantSchema = joi.object({
   image: joi.string().uri().trim().required(),
   className: joi.string().trim().required(),
 });
+
+

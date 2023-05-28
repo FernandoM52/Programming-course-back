@@ -7,6 +7,13 @@ export async function getStudantDB(body) {
   return result;
 }
 
+export async function getStudantByCpfDB(body) {
+  const { cpf } = body;
+
+  const result = await db.query("SELECT * FROM studants WHERE cpf = $1;", [cpf]);
+  return result;
+}
+
 export async function registerStudantDB(body) {
   const { name, email, image, cpf, className } = body;
 
@@ -50,13 +57,24 @@ export async function checkStudantsClassDB(params) {
   return result;
 }
 
-export async function getStudantByIdDB(classCode, studantId) {
+export async function getStudantByIdDB(classCode, id) {
   const result = await db.query(
     `SELECT studants.*, enrollments.started, enrollments.ended
      FROM studants
      JOIN enrollments ON enrollments."classCode" = $1
      WHERE studants.id = $2;`,
-    [classCode, studantId,]
+    [classCode, id,]
   );
   return result;
+}
+
+export async function updateStudantDB(body, params) {
+  const { name, cpf, email, image, } = body;
+  const { id } = params;
+
+  await db.query(
+    `UPDATE studants SET name = $1, cpf = $2, email = $3, image = $4
+     WHERE id = $5;`,
+    [name, cpf, email, image, id,]
+  );
 }

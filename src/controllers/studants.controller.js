@@ -1,5 +1,5 @@
 import { getProjectsDB } from "../repositories/project.repository.js";
-import { createEnrollmentDB, getClassesDB, getStudantByIdDB, registerStudantDB } from "../repositories/studant.repository.js";
+import { createEnrollmentDB, getClassesDB, getStudantByIdDB, registerStudantDB, updateStudantDB } from "../repositories/studant.repository.js";
 
 export async function registerStudant(req, res) {
   try {
@@ -37,11 +37,20 @@ export async function getStudantsByClass(req, res) {
 
 export async function getStudantById(req, res) {
   const classCode = req.params.classCode;
-  const studantId = req.params.studantId;
+  const id = req.params.id;
 
   try {
-    const studant = await getStudantByIdDB(classCode, studantId);
+    const studant = await getStudantByIdDB(classCode, id);
     res.send(studant.rows[0]);
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+}
+
+export async function updateStudent(req, res) {
+  try {
+    await updateStudantDB(req.body, req.params);
+    res.send({ message: "Dados atualizados com sucesso!" });
   } catch (err) {
     res.status(500).send(err.message);
   }
