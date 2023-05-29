@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { getClassesAndProjects } from "../controllers/classes.controller.js";
+import { getClasses } from "../controllers/classes.controller.js";
 
 const classRoute = Router();
 
-classRoute.get("/classes", getClassesAndProjects);
+classRoute.get("/classes", getClasses);
 
 export default classRoute;

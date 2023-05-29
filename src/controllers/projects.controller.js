@@ -1,4 +1,4 @@
-import { deliverProjectDB, updateNoteDB, getDeliveriesDB } from "../repositories/project.repository.js";
+import { deliverProjectDB, updateNoteDB, getDeliveriesDB, getProjectsDB } from "../repositories/project.repository.js";
 
 export async function deliverProject(req, res) {
   try {
@@ -13,6 +13,15 @@ export async function updateNote(req, res) {
   try {
     await updateNoteDB(req.params, req.body);
     res.send({ message: "Nota atualizada com sucesso!" });
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+}
+
+export async function getProjects(req, res) {
+  try {
+    const projects = await getProjectsDB();
+    res.send(projects.rows);
   } catch (err) {
     res.status(500).send(err.message);
   }
