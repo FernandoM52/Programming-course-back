@@ -11,3 +11,7 @@ export const projectSchema = joi.object({
 export const projectNoteSchema = joi.object({
   note: joi.string().valid("Acima das expectativas", "Dentro das expectativas", "Abaixo das expectativas").trim().required(),
 });
+
+export const createProjectSchema = joi.object({
+  projectName: joi.string().trim().required(),
+});

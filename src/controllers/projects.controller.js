@@ -1,4 +1,13 @@
-import { deliverProjectDB, updateNoteDB, getDeliveriesDB, getProjectsDB } from "../repositories/project.repository.js";
+import { deliverProjectDB, updateNoteDB, getDeliveriesDB, getProjectsDB, createProjectDB } from "../repositories/project.repository.js";
+
+export async function creatProject(req, res) {
+  try {
+    await createProjectDB(req.body);
+    res.status(201).send("Projeto criado com sucesso");
+  } catch (err) {
+    res.status(500).send(err.message);
+  }
+}
 
 export async function deliverProject(req, res) {
   try {

@@ -1,9 +1,14 @@
 import { db } from "../database/db.connection.js";
 
+export async function createProjectDB(body) {
+  const { projectName } = body;
+  await db.query("INSER INTO projects (name) VALUES ($1);", [projectName]);
+}
+
 export async function deliverProjectDB(body) {
   const { className, studentName, email, projectName, projectLink } = body;
 
-  const student = await db.query("SELECT * FROM studants WHERE email = $1 AND name = $2;", [email, studentName]);
+  const student = await db.query("SELECT * FROM students WHERE email = $1 AND name = $2;", [email, studentName]);
   const { id } = student.rows[0];
 
   await db.query(
@@ -33,13 +38,13 @@ export async function getDeliveriesDB(params) {
   const { classCode, project } = params;
 
   const result = await db.query(
-    `SELECT projects.name AS "ProjectName", studants.id as "studantId", studants.name AS "StudantName", studants.image, deliveries."currentNote"
+    `SELECT projects.name AS "ProjectName", students.id as "studantId", students.name AS "StudantName", students.image, deliveries."currentNote"
      FROM deliveries
      JOIN projects ON projects.name = $1
-     JOIN studants ON studants.id = deliveries."studantId"
+     JOIN students ON students.id = deliveries."studantId"
      WHERE deliveries."dateDeliver" IS NOT NULL
       AND deliveries."projectName" = $2
-      AND studants."currentClass" = $3;`,
+      AND students."currentClass" = $3;`,
     [project, project, classCode,]
   );
   return result.rows;
@@ -48,7 +53,7 @@ export async function getDeliveriesDB(params) {
 export async function checkDelivery(body) {
   const { email, projectName } = body;
 
-  const student = await db.query("SELECT * FROM studants WHERE email = $1;", [email]);
+  const student = await db.query("SELECT * FROM students WHERE email = $1;", [email]);
   const { id } = student.rows[0];
 
   const project = await db.query(

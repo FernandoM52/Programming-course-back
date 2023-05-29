@@ -3,7 +3,7 @@ import { db } from "../database/db.connection.js";
 export async function createEnrollmentDB(body) {
   const { email, cpf } = body;
 
-  const result = await db.query("SELECT * FROM studants WHERE email = $1 AND cpf = $2;", [email, cpf]);
+  const result = await db.query("SELECT * FROM students WHERE email = $1 AND cpf = $2;", [email, cpf]);
   const { id, currentClass } = result.rows[0];
 
   await db.query(
@@ -17,7 +17,7 @@ export async function updateStudentEnrollmentDB(body) {
   const { id, name, email, image, className } = body;
 
   await db.query(
-    `UPDATE studants
+    `UPDATE students
      SET name = $1, email = $2, image = $3, "currentClass" = $4
      WHERE id = $5;`,
     [name, email, image, className, id,]
@@ -34,7 +34,7 @@ export async function endEnrollmentDB(params) {
   );
 
   await db.query(
-    `UPDATE studants SET "currentClass" = null
+    `UPDATE students SET "currentClass" = null
      WHERE id = $1;`,
     [id]
   );
