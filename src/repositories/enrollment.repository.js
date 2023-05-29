@@ -7,7 +7,7 @@ export async function createEnrollmentDB(body) {
   const { id, currentClass } = result.rows[0];
 
   await db.query(
-    `INSERT INTO enrollments ("studantId", "classCode")
+    `INSERT INTO enrollments ("studentId", "classCode")
     VALUES ($1, $2);`,
     [id, currentClass,]
   );
@@ -29,7 +29,7 @@ export async function endEnrollmentDB(params) {
 
   await db.query(
     `UPDATE enrollments SET ended = now()
-     WHERE enrollments."studantId" = $1;`,
+     WHERE enrollments."studentId" = $1;`,
     [id]
   );
 
@@ -43,6 +43,6 @@ export async function endEnrollmentDB(params) {
 export async function checkEnrrolmentDB(params) {
   const { id } = params;
 
-  const result = await db.query(`SELECT * FROM enrollments WHERE "studantId" = $1 AND ended != null;`, [id]);
+  const result = await db.query(`SELECT * FROM enrollments WHERE "studentId" = $1 AND ended != null;`, [id]);
   return result;
 }

@@ -46,7 +46,7 @@ export async function getStudentDataDB(id) {
   const result = await db.query(
     `SELECT students.*, enrollments.started, enrollments.ended
      FROM students
-     JOIN enrollments ON enrollments."studantId" = students.id
+     JOIN enrollments ON enrollments."studentId" = students.id
      WHERE students.id = $1;`,
     [id]
   );

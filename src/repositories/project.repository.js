@@ -12,7 +12,7 @@ export async function deliverProjectDB(body) {
   const { id } = student.rows[0];
 
   await db.query(
-    `INSERT INTO deliveries ("classCode", "studantId", "projectName", "projectLink")
+    `INSERT INTO deliveries ("classCode", "studentId", "projectName", "projectLink")
      VALUES ($1, $2, $3, $4);`,
     [className, id, projectName, projectLink,]
   );
@@ -24,7 +24,7 @@ export async function updateNoteDB(params, body) {
 
   await db.query(
     `UPDATE deliveries SET "currentNote" = $1
-     WHERE "projectName" = $2 AND "studantId" = $3;`,
+     WHERE "projectName" = $2 AND "studentId" = $3;`,
     [note, project, id,]
   );
 }
@@ -38,10 +38,10 @@ export async function getDeliveriesDB(params) {
   const { classCode, project } = params;
 
   const result = await db.query(
-    `SELECT projects.name AS "ProjectName", students.id as "studantId", students.name AS "StudantName", students.image, deliveries."currentNote"
+    `SELECT projects.name AS "ProjectName", students.id as "studentId", students.name AS "studentName", students.image, deliveries."currentNote"
      FROM deliveries
      JOIN projects ON projects.name = $1
-     JOIN students ON students.id = deliveries."studantId"
+     JOIN students ON students.id = deliveries."studentId"
      WHERE deliveries."dateDeliver" IS NOT NULL
       AND deliveries."projectName" = $2
       AND students."currentClass" = $3;`,
@@ -58,7 +58,7 @@ export async function checkDelivery(body) {
 
   const project = await db.query(
     `SELECT * FROM deliveries
-     WHERE "studantId" = $1 AND "projectName" = $2`,
+     WHERE "studentId" = $1 AND "projectName" = $2`,
     [id, projectName]
   );
   return project;
